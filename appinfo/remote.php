@@ -22,7 +22,7 @@
  *
  */
 
-OCP\App::checkAppEnabled('contacts');
+OCP\App::checkAppEnabled('contacts', true);
 
 if (substr(OCP\Util::getRequestUri(), 0, strlen(OC_App::getAppWebPath('contacts').'/carddav.php'))
 	=== OC_App::getAppWebPath('contacts').'/carddav.php'
@@ -70,6 +70,12 @@ $server->addPlugin(new \Sabre\DAVACL\Plugin());
 $server->addPlugin(new \Sabre\DAV\Browser\Plugin(false)); // Show something in the Browser, but no upload
 $server->addPlugin(new \Sabre\CardDAV\VCFExportPlugin());
 $server->addPlugin(new OC_Connector_Sabre_ExceptionLoggerPlugin('carddav'));
+$server->addPlugin(new \OC\Connector\Sabre\AppEnabledPlugin(
+	'contacts',
+	OC::$server->getUserSession(),
+	OC::$server->getConfig(),
+	OC::$server->getGroupManager()
+));
 
 if (defined('DEBUG') && DEBUG) {
 	$server->debugExceptions = true;
